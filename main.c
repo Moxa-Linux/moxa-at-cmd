@@ -58,14 +58,13 @@ void usage()
 int main(int argc, char **argv)
 {
     char optstring[]    = "c:d:t:h";
-    char at_result      [4096];
+    char *at_result     = NULL;
     char at_dev         [128];
     char at_cmd         [512];
     char tmp            [128];
     char c;
     int  time_out_sec   = DEF_TIME_OUT;
     
-    memset (at_result,  0, 4096);
     memset (at_cmd,     0, 512);
     memset (at_dev,     0, 128);
     
@@ -104,7 +103,7 @@ int main(int argc, char **argv)
         sprintf(tmp, "stty -F %s -echo raw", at_dev);
         pcommend(tmp);
         
-        at_cmd_run(at_dev, at_cmd, at_result, time_out_sec);
+        at_cmd_run(at_dev, at_cmd, &at_result, time_out_sec);
         if (!timeout_flag)
             printf("%s", at_result);
     }
@@ -113,6 +112,8 @@ int main(int argc, char **argv)
         printf(" [!] no at device path or at command input.\n");
         usage();
     }
+    if (at_result)
+        free(at_result);
     
     return 0;
 }

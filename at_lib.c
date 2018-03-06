@@ -78,13 +78,14 @@ static int is_final_result(const char * const response)
     }
 }
 
-int at_cmd_run(char *at_dev, char *cmd_str, char *result_str, int time_out_sec)
+int at_cmd_run(char *at_dev, char *cmd_str, char **result_str, int time_out_sec)
 {
     FILE        *modem;
     char        *line;
     char        *cmd;
     int         res;
     int         success;
+    int         length = 0;
 
     cmd = (char *)malloc(1024);
     sprintf(cmd, "%s\r\n", cmd_str);
@@ -111,6 +112,7 @@ int at_cmd_run(char *at_dev, char *cmd_str, char *result_str, int time_out_sec)
         goto at_fail;
     }
 
+    *result_str = NULL;
     do 
     {
         alarm(time_out_sec);
@@ -123,7 +125,17 @@ int at_cmd_run(char *at_dev, char *cmd_str, char *result_str, int time_out_sec)
 
         strcpy(buf2, line);
         strip_cr(buf2);
-        strcat(result_str, buf2);
+        length += strlen(buf2);
+        if (*result_str == NULL)
+            *result_str = calloc(length + 1, sizeof(char));
+	else
+            *result_str = realloc(*result_str, sizeof(char) * (length + 1));
+        if (*result_str == NULL)
+        {
+            printf("[ERROR] at_cmd_run, failed to allocate memory (%d)", length);
+            goto at_fail;
+        }
+        strcat(*result_str, buf2);
         alarm(0);
     } while (!is_final_result(line));
     
