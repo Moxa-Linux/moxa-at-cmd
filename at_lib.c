@@ -21,9 +21,9 @@
 #define MAX_RESP_LENGTH (16 * 1024)
 
 /* Replace '\n' with '\r', aka `tr '\012' '\015'` */
-static int tr_lf_cr(const char *s)
-{
+static int tr_lf_cr(const char *s) {
     char *p;
+
     p = strchr(s, '\n');
     if (p == NULL || p[1] != '\0') {
         return FALSE;
@@ -32,9 +32,9 @@ static int tr_lf_cr(const char *s)
     return TRUE;
 }
 
-static void strip_cr(char *s)
-{
+static void strip_cr(char *s) {
     char *from, *to;
+
     from = to = s;
     while (*from != '\0') {
         if (*from == '\r') {
@@ -59,8 +59,7 @@ static int hextobin (unsigned char c) {
     }
 }
 
-static void format_str(char *s)
-{
+static void format_str(char *s) {
     char c;
     char *to;
 
@@ -220,14 +219,14 @@ int at_cmd_run (
     AT_PARSER* parser;
 
 
-    cmd = (char *)malloc(1024);
+    cmd = (char *)calloc(strlen(cmd_str)+3, sizeof(char));
     sprintf(cmd, "%s\r\n", cmd_str);
 
     format_str(cmd);
     success = tr_lf_cr(cmd);
     if (!success) 
     {
-        printf("[ERROR] at_cmd_run, invalid string: '%s'.", cmd);
+        fprintf(stderr, "[ERROR] at_cmd_run, invalid string: '%s'.", cmd);
         free(cmd);
         return -1;
     }
@@ -235,7 +234,7 @@ int at_cmd_run (
     modem = open(at_dev, O_RDWR|O_NONBLOCK);
     if (modem == -1)
     {
-        printf("[ERROR] at_cmd_run, fopen(%s) failed.", at_dev);
+        fprintf(stderr, "[ERROR] at_cmd_run, fopen(%s) failed.", at_dev);
         goto at_fail;
     }
 
