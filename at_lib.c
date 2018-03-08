@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include "at-parser.h"
 
@@ -197,7 +198,7 @@ int at_resp_read (
         else if (status < 0) {
             fprintf(stderr, "[ERROR] Serial select error\n");
         }
-        mdelay(10) ;
+        mdelay(10);
     }
 
     if (total_len == 0)
@@ -224,16 +225,14 @@ int at_cmd_run (
 
     format_str(cmd);
     success = tr_lf_cr(cmd);
-    if (!success) 
-    {
+    if (!success) {
         fprintf(stderr, "[ERROR] at_cmd_run, invalid string: '%s'.", cmd);
         free(cmd);
         return -1;
     }
 
     modem = open(at_dev, O_RDWR|O_NONBLOCK);
-    if (modem == -1)
-    {
+    if (modem == -1) {
         fprintf(stderr, "[ERROR] at_cmd_run, fopen(%s) failed.", at_dev);
         goto at_fail;
     }

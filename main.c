@@ -12,29 +12,33 @@
 
 #define DEF_TIME_OUT    5000
 
+int at_cmd_run (
+        char *at_dev,
+        char *cmd_str,
+        char **result_str,
+        int timeout_msec);
 
-int pcommend(char *cmd)
-{
+
+int pcommend (char *cmd) {
     FILE *fp;
     char buff[1024];
     
     // Open the command for reading. 
     fp = popen(cmd, "r");
     if (fp == NULL) {
-        printf("[ERROR]Failed to run command.");
+        fprintf(stderr, "[ERROR] Failed to run command.");
         return -1;
     }
 
     // Read the output a line at a time - output it. 
-    while (fgets(buff, sizeof(buff)-1, fp) != NULL);
+    while (fgets(buff, sizeof(buff)-1, fp) != NULL) ;
 
     // close 
     pclose(fp);
     return 0;
 }
 
-void usage() 
-{
+void usage () {
     printf("\n");
     printf(" ******************************************************\n");
     printf(" moxa at inout tool. ver: %s\n", VERSION);
@@ -47,8 +51,7 @@ void usage()
     printf(" ******************************************************\n");
 }
 
-int main(int argc, char **argv)
-{
+int main (int argc, char **argv) {
     char optstring[]    = "c:d:t:h";
     char *at_result     = NULL;
     char at_dev         [128];
@@ -62,11 +65,9 @@ int main(int argc, char **argv)
     memset (at_cmd, 0, 1024);
     memset (at_dev, 0, 128);
 
-    while ((c = getopt(argc, argv, optstring)) != -1)
-    {
+    while ((c = getopt(argc, argv, optstring)) != -1) {
         int exit = 0;
-        switch (c) 
-        {
+        switch (c) {
             case 'c':
                 if (strlen(optarg) >= sizeof(at_cmd) - 1) {
                     fprintf(stderr, "[ERROR] AT command too long (< 1024).");
@@ -91,7 +92,7 @@ int main(int argc, char **argv)
                 exit = 1; 
                 break;
         }
-        
+
         if (exit)
             break;
     }
