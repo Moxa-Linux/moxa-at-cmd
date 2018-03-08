@@ -60,13 +60,13 @@ int main(int argc, char **argv)
     char optstring[]    = "c:d:t:h";
     char *at_result     = NULL;
     char at_dev         [128];
-    char at_cmd         [512];
+    char at_cmd         [1024];
     char tmp            [128];
     char c;
     int  time_out_sec   = DEF_TIME_OUT;
     
-    memset (at_cmd,     0, 512);
-    memset (at_dev,     0, 128);
+    memset (at_cmd, 0, 1024);
+    memset (at_dev, 0, 128);
     
     siginterrupt(SIGALRM, 1);
     signal(SIGALRM, handler);
@@ -77,12 +77,18 @@ int main(int argc, char **argv)
         switch (c) 
         {
             case 'c':
+                if (strlen(optarg) >= sizeof(at_cmd) - 1) {
+                    fprintf(stderr, "[ERROR] AT command too long (< 1024).");
+                    return -1;
+                }
                 memcpy (at_cmd, optarg, strlen(optarg));
-                //printf (" - at_cmd = %s.\n", at_cmd);
                 break;
             case 'd':
+                if (strlen(optarg) >= sizeof(at_dev) - 1) {
+                    fprintf(stderr, "[ERROR] Device path too long (< 128).");
+                    return -1;
+                }
                 memcpy (at_dev, optarg, strlen(optarg));
-                //printf (" - at_dev = %s.\n", at_dev);
                 break;
             case 't':
                 time_out_sec = atoi(optarg);
