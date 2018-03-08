@@ -1,3 +1,10 @@
+moxa-at-cmd (1.0.0-1) unstable; urgency=low
+
+  * feat: use regex for at command response parser.
+  * fix: output error message to `stderr`.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Thu, 08 Mar 2018 17:11:55 +0800
+
 moxa-at-cmd (0.9.3-1) unstable; urgency=low
 
   * fix: dynamic allocate memory for response.
