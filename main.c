@@ -10,9 +10,8 @@
 #include <string.h>
 #include <signal.h>
 
-#define DEF_TIME_OUT    5
+#define DEF_TIME_OUT    5000
 
-static volatile int timeout_flag = 0;
 
 int pcommend(char *cmd)
 {
@@ -34,13 +33,6 @@ int pcommend(char *cmd)
     return 0;
 }
 
-// handler - catch alarm signal and set flag.
-void handler(int sig)
-{
-    printf("At command timeout.\n");
-    timeout_flag = 1;
-}
-
 void usage() 
 {
     printf("\n");
@@ -51,7 +43,7 @@ void usage()
     printf(" support command : \n");
     printf(" -d : at device path. ex: /dev/ttyUSB2.\n");
     printf(" -c : at command, it is best to add \" like \"AT^SYSINFO\".\n");
-    printf(" -t : set timeout (second)\n");
+    printf(" -t : set timeout (milliseconds)\n");
     printf(" ******************************************************\n");
 }
 
@@ -63,14 +55,13 @@ int main(int argc, char **argv)
     char at_cmd         [1024];
     char tmp            [128];
     char c;
-    int  time_out_sec   = DEF_TIME_OUT;
-    
+    int  timeout_msec   = DEF_TIME_OUT;
+    int  ret = 0;
+
+
     memset (at_cmd, 0, 1024);
     memset (at_dev, 0, 128);
-    
-    siginterrupt(SIGALRM, 1);
-    signal(SIGALRM, handler);
-    
+
     while ((c = getopt(argc, argv, optstring)) != -1)
     {
         int exit = 0;
@@ -91,7 +82,7 @@ int main(int argc, char **argv)
                 memcpy (at_dev, optarg, strlen(optarg));
                 break;
             case 't':
-                time_out_sec = atoi(optarg);
+                timeout_msec = atoi(optarg);
                 break;
             case 'h':
                 usage();
@@ -101,25 +92,23 @@ int main(int argc, char **argv)
                 break;
         }
         
-        if(exit)break;
+        if (exit)
+            break;
     }
-    
-    if (strlen(at_cmd) != 0 && strlen(at_dev) != 0)
-    {
+
+    if (strlen(at_cmd) != 0 && strlen(at_dev) != 0) {
         sprintf(tmp, "stty -F %s -echo raw", at_dev);
         pcommend(tmp);
         
-        at_cmd_run(at_dev, at_cmd, &at_result, time_out_sec);
-        if (!timeout_flag)
+        ret = at_cmd_run(at_dev, at_cmd, &at_result, timeout_msec);
+        if (at_result) {
             printf("%s", at_result);
-    }
-    else
-    {
-        printf(" [!] no at device path or at command input.\n");
+            free(at_result);
+        }
+        return ret;
+    } else {
         usage();
     }
-    if (at_result)
-        free(at_result);
-    
+
     return 0;
 }
