@@ -19,7 +19,7 @@
 #define TRUE    1
 #define FALSE   0
 #define MAX_BUF_LENGTH (4 * 1024)
-#define MAX_RESP_LENGTH (16 * 1024)
+#define MAX_RESP_LENGTH (128 * 1024)
 
 /* Replace '\n' with '\r', aka `tr '\012' '\015'` */
 static int tr_lf_cr(const char *s) {
