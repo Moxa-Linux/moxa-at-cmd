@@ -1,3 +1,10 @@
+moxa-at-cmd (0.9.3-1) unstable; urgency=low
+
+  * fix: dynamic allocate memory for response.
+  * fix: support control characters.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Wed, 07 Mar 2018 16:58:15 +0800
+
 moxa-at-cmd (0.9.2-1) unstable; urgency=low
 
   * fix: extend command buffer size for long AT command
