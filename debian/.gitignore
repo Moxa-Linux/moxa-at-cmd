@@ -1,0 +1,5 @@
+*.debhelper.log
+*.substvars
+debhelper-build-stamp
+files
+moxa-at-cmd/

@@ -1,0 +1,15 @@
+Source: moxa-at-cmd
+Priority: optional
+Maintainer: Aeluin Chen <aeluin.chen@moxa.com>
+Build-Depends: debhelper (>= 10),
+               automake
+Standards-Version: 4.1.2
+Section: utils
+Homepage: http://www.moxa.com
+
+Package: moxa-at-cmd
+Section: utils
+Architecture: linux-any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Utility to execute AT command.
