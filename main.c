@@ -1,7 +1,7 @@
 #if HAVE_CONFIG_H
 # include <config.h>
 #else
-# define VERSION "0.9.0"
+# define VERSION "1.0.0"
 #endif
 
 #include <stdio.h>
