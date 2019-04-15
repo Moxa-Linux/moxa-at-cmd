@@ -3,8 +3,8 @@ CFLAGS ?= -Wall
 LDFLAGS ?=
 DESTDIR ?= /
 
-all: main.o at_lib.o
-	$(CC) $(CFLAGS) main.o at_lib.o -o mxat
+all: main.o at_lib.o at-parser.o
+	$(CC) $(CFLAGS) main.o at_lib.o at-parser.o -o mxat
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
